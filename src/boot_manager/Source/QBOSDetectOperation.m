@@ -38,7 +38,7 @@
         
         NSLog(@"volumeName: '%s' devicePath: '%s' filesystem: '%s' volumePath: '%s'", (char *)[[self.volume.disk volumeName] UTF8String], (char *)[[self.volume.disk devicePath] UTF8String], (char *)[[self.volume.disk filesystem] UTF8String], (char *)[[self.volume.disk volumePath] UTF8String]);
         
-		// I read this wasn't best but this is for a non-running system
+		// macOS
 		NSString *versionPath = [[[[self.volume.disk.volumePath stringByAppendingPathComponent:@"System"]
 								   stringByAppendingPathComponent:@"Library"]
 								  stringByAppendingPathComponent:@"CoreServices"]
@@ -47,12 +47,13 @@
 																   stringByAppendingPathComponent:@"Library"]
 																  stringByAppendingPathComponent:@"CoreServices"]
 																 stringByAppendingPathComponent:@"ServerVersion.plist"];
+        
+        // Winbugs
         NSString *winbugsPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"Windows"]
                                          stringByAppendingPathComponent:@"System32"];
-        NSString *winbugsInstallationPath = [[[self.volume.disk.volumePath stringByAppendingPathComponent:@"efi"]
-                                    stringByAppendingPathComponent:@"microsoft"] stringByAppendingPathComponent:@"boot"];
         NSString *winbugsLegacyInstallationPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"sources"]
                                                     stringByAppendingPathComponent:@"boot.wim"];
+        // Linux
         NSString *fedoraEfiPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"EFI"]
                                     stringByAppendingPathComponent:@"fedora"];
         NSString *manjaroEfiPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"EFI"]
@@ -71,16 +72,24 @@
                                    stringByAppendingPathComponent:@"Slackware"];
         NSString *suseEfiPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"EFI"]
                                    stringByAppendingPathComponent:@"SuSE"];
+        NSString *linuxLegacy = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"usr"]
+                                 stringByAppendingPathComponent:@"bin"];
+        NSString *linuxLegacyDiscPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"isolinux"]
+                                         stringByAppendingPathComponent:@"isolinux.bin"];
+        
+        // Bootloaders
         NSString *grubEfiPath = [[[self.volume.disk.volumePath stringByAppendingPathComponent:@"EFI"]
                                    stringByAppendingPathComponent:@"BOOT"] stringByAppendingPathComponent:@"grubx64.efi"];
         NSString *eliloEfiPath = [[[self.volume.disk.volumePath stringByAppendingPathComponent:@"EFI"]
                                    stringByAppendingPathComponent:@"elilo"] stringByAppendingPathComponent:@"elilo.efi"];
-        NSString *linuxLegacyDiscPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"isolinux"]
-                                       stringByAppendingPathComponent:@"isolinux.bin"];
         NSString *nextloaderEfiPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"loader"]
                                    stringByAppendingPathComponent:@"loader.efi"];
         
         BOOL isDir;
+        
+        /**
+         * Winbugs paths
+         */
 		if([fileManager fileExistsAtPath:winbugsPath isDirectory:&isDir])
 		{
 			if(isDir)
@@ -89,19 +98,35 @@
 				legacy = YES;
 			}
 		}
-        else if([fileManager fileExistsAtPath:winbugsInstallationPath isDirectory:&isDir])
-        {
-            if(isDir)
-            {
-                osName = @"Windows"; // Winbugs Installation Disc
-                legacy = YES;
-            }
-        }
         else if([fileManager fileExistsAtPath:winbugsLegacyInstallationPath])
         {
-            osName = @"Windows"; // Winbugs Legacy Installation Disc
+            osName = @"Windows"; // Winbugs Legacy Installation Environment
             legacy = YES;
         }
+        
+        /**
+         * macOS paths
+         */
+        else if([fileManager fileExistsAtPath:versionPath])
+        {
+            NSDictionary *version = [NSDictionary dictionaryWithContentsOfFile:versionPath];
+            osName = @"macOS"; // macOS
+            osVersion = [version objectForKey:@"ProductUserVisibleVersion"];
+            osBuild = [version objectForKey:@"ProductBuildVersion"];
+            legacy = NO;
+        }
+        else if([fileManager fileExistsAtPath:serverVersionPath])
+        {
+            NSDictionary *version = [NSDictionary dictionaryWithContentsOfFile:versionPath];
+            osName = @"macOS Server %@/%@"; // macOS Server
+            osVersion = [version objectForKey:@"ProductUserVisibleVersion"];
+            osBuild = [version objectForKey:@"ProductBuildVersion"];
+            legacy = NO;
+        }
+
+        /**
+         * Linux paths
+         */
         else if([fileManager fileExistsAtPath:fedoraEfiPath isDirectory:&isDir])
         {
             if(isDir)
@@ -174,45 +199,37 @@
                 legacy = NO;
             }
         }
+        else if([fileManager fileExistsAtPath:linuxLegacy])
+        {
+            osName = @"Linux"; // Generic Legacy Linux
+            legacy = YES;
+        }
+        else if([fileManager fileExistsAtPath:linuxLegacyDiscPath])
+        {
+            osName = @"Linux"; // Generic Legacy Linux Installation Disc
+            legacy = YES;
+        }
+        
+        /**
+         * Bootloaders paths
+         */
         else if([fileManager fileExistsAtPath:grubEfiPath])
         {
-            osName = @"Linux"; // Generic Linux (GRUB)
+            osName = @"GRUB"; // GRUB
             osBootLoader = @"/EFI/BOOT/grubx64.efi";
             legacy = NO;
         }
         else if([fileManager fileExistsAtPath:eliloEfiPath])
         {
-            osName = @"Linux"; // Generic Linux (ELILO)
+            osName = @"ELILO"; // ELILO
             osBootLoader = @"/EFI/elilo/elilo.efi";
             legacy = NO;
-        }
-        else if([fileManager fileExistsAtPath:linuxLegacyDiscPath])
-        {
-            osName = @"Linux"; // Generic Linux Legacy Installation Disc
-            legacy = YES;
         }
         else if([fileManager fileExistsAtPath:nextloaderEfiPath])
         {
             osName = @"Next Loader"; // Next Loader
-            osBootLoader = @"/loader/loader.efi";
             legacy = NO;
         }
-		else if([fileManager fileExistsAtPath:versionPath])
-		{
-			NSDictionary *version = [NSDictionary dictionaryWithContentsOfFile:versionPath];
-			osName = @"macOS";
-			osVersion = [version objectForKey:@"ProductUserVisibleVersion"];
-			osBuild = [version objectForKey:@"ProductBuildVersion"];
-			legacy = NO;
-		}
-		else if([fileManager fileExistsAtPath:serverVersionPath])
-		{
-			NSDictionary *version = [NSDictionary dictionaryWithContentsOfFile:versionPath];
-			osName = @"macOS Server %@/%@";
-			osVersion = [version objectForKey:@"ProductUserVisibleVersion"];
-			osBuild = [version objectForKey:@"ProductBuildVersion"];
-			legacy = NO;
-		}
 		else
 		{
 			osName = nil;

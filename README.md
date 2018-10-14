@@ -36,20 +36,21 @@ package, and install it normally by double-clicking on it.
 
 ### Compatibility
 Boot Manager supports the following operating systems in the following modes, Some of the operating systems
-listed below (Marked with an asterisk) only work if they are have their own dedicated EFI Partition.
+requires additional software.
 
 | *Operative System*           | *Boot Modes* |
 |------------------------------|--------------|
 | macOS                        | EFI          |
+| macOS Server                 | EFI          |
 | Windows                      | BIOS, EFI    |
 | Windows (Installation DVD)   | BIOS         |
-| Ubuntu                       | EFI*         |
-| Debian                       | EFI*         |
-| Fedora                       | EFI*         |
-| Manjaro                      | EFI*         |
-| CentOS                       | EFI*         |
-| Slackware                    | EFI*         |
-| openSUSE                     | EFI*         |
+| Ubuntu                       | EFI          |
+| Debian                       | EFI          |
+| Fedora                       | EFI          |
+| Manjaro                      | EFI          |
+| CentOS                       | EFI          |
+| Slackware                    | EFI          |
+| openSUSE                     | EFI          |
 | Linux x86 (Installation DVD) | BIOS         |
 | GRUB                         | EFI          |
 | ELILO                        | EFI          |

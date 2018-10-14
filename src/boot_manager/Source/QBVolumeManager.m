@@ -20,6 +20,7 @@
 - (BOOL)passwordlessBootingEnabled;
 @property (nonatomic, strong) BDDisk *efiDisk;
 @property (nonatomic, strong) BDDisk *efiWinbugs;
+@property (nonatomic) bool *efiWinbugsSet;
 @end
 
 
@@ -231,23 +232,35 @@ cleanup:
 
 - (void)diskDidAppear:(BDDisk *)disk
 {
-    /*NSLog(@"devicePath: '%s'", (char *)[[disk devicePath] UTF8String]);
+    NSLog(@"devicePath: '%s'", (char *)[[disk devicePath] UTF8String]);
     NSLog(@"filesystem: '%s'", (char *)[[disk filesystem] UTF8String]);
     NSLog(@"volumeName: '%s'", (char *)[[disk volumeName] UTF8String]);
     NSLog(@"volumePath: '%s'", (char *)[[disk volumePath] UTF8String]);
-    NSLog(@"----");*/
-
+    NSLog(@"----");
+    
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    
     if ([[disk filesystem] isEqualToString:@"msdos"] && [[disk volumeName] isEqualToString:@"NO NAME"]) {
         // Winbugs EFI Partition
         self.efiWinbugs = disk;
+        self.efiWinbugsSet = YES;
     }
     else if([[disk volumeName] isEqualToString:@"EFI"]) {
         // macOS/Linux EFI Partition
         self.efiDisk = disk;
      
         // Probably Winbugs is installed on the same hard drive in EFI mode?
-        if ([[self.efiWinbugs volumeName] isEqualToString:@"(null)"] || [[self.efiWinbugs volumeName] isEqualToString:@""] || self.efiWinbugs == NULL) {
+        if (!self.efiWinbugsSet)
+        {
             self.efiWinbugs = disk;
+            
+            NSString *winbugsEfiPath = [[[[disk volumePath] stringByAppendingPathComponent:@"efi"]
+                                                  stringByAppendingPathComponent:@"microsoft"] stringByAppendingPathComponent:@"boot"];
+            
+            if([fileManager fileExistsAtPath:winbugsEfiPath])
+            {
+                self.efiWinbugsSet = YES;
+            }
         }
 
         QBOSDetectOperation *op = [QBOSDetectOperation detectOperationWithVolume:[QBVolume volumeWithDisk:disk]];
@@ -311,21 +324,6 @@ cleanup:
         
         args[2] = "--nextonly";
         args[3] = "--setBoot";
-        
-        /*// Set boot loader full file path if volume is not legacy
-        if(!((char *)[[volume systemBootLoader] UTF8String] == NULL) && (!volume.legacyOS || !useLegacyMode)) {
-            args[4] = "--file";
-            
-            if (!([disk volumePath] == NULL) && ![[disk volumePath] isEqualToString:@"(null)"]) {
-                NSString *fullBootLoaderPath = [NSString stringWithFormat:@"%@%@", [disk volumePath], [volume systemBootLoader]];
-                args[5] = (char *)[fullBootLoaderPath UTF8String];
-            } else {
-                args[5] = (char *)[[volume systemBootLoader] UTF8String];
-            }
-        } else {
-            args[4] = NULL;
-            args[5] = NULL;
-        }*/
         
         // Set Legacy Mode
         if (
