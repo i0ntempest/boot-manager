@@ -44,17 +44,23 @@ requires additional software.
 | macOS Server                 | EFI          |
 | Windows                      | BIOS, EFI    |
 | Windows (Installation DVD)   | BIOS         |
-| Ubuntu                       | EFI          |
-| Debian                       | EFI          |
-| Fedora                       | EFI          |
-| Manjaro                      | EFI          |
-| CentOS                       | EFI          |
-| Slackware                    | EFI          |
-| openSUSE                     | EFI          |
+| Windows (Installation USB)   | EFI          |
+| Ubuntu                       | BIOS*, EFI** |
+| Debian                       | BIOS*, EFI** |
+| Fedora                       | BIOS*, EFI** |
+| Manjaro                      | BIOS*, EFI** |
+| CentOS                       | BIOS*, EFI** |
+| Slackware                    | BIOS*, EFI** |
+| openSUSE                     | BIOS*, EFI** |
 | Linux x86 (Installation DVD) | BIOS         |
-| GRUB                         | EFI          |
-| ELILO                        | EFI          |
+| GRUB                         | EFI**        |
+| ELILO                        | EFI**        |
 | Next Loader                  | EFI          |
+
+```
+* Requires FUSE for macOS to detect Linux volumes in BIOS mode.
+** Requires EFI partitions to be mounted automatically at system startup in order to detect EFI Linux installations.
+```
 
 ## Contributing to the Project
 ### Developers

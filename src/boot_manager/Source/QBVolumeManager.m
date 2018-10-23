@@ -95,7 +95,6 @@
 	if (myStatus == noErr) {
 		char *args[3] = {NULL, NULL, NULL}
 		;
-//		NSLog(@"Changing permissions");
 		args[0] = "4755";
 		args[1] = (char *)[[self helperPath] UTF8String];;
 #pragma clang diagnostic push
@@ -105,12 +104,10 @@
 		if(myStatus != noErr)
 		{
 			NSLog(@"chmod failed on helper");
-			//goto cleanup;
 		}
 		
 		args[0] = "root";
 		args[1] = (char *)[[self helperPath] UTF8String];;
-//		NSLog(@"Changing owner");
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 		myStatus = AuthorizationExecuteWithPrivileges(myAuthorizationRef, "/usr/sbin/chown", kAuthorizationFlagDefaults, args, NULL);
@@ -122,8 +119,6 @@
 		}
 	}
 cleanup:
-//	if(myStatus != noErr)
-//		NSLog(@"Failed authorization: %i", (int)myStatus);
 	AuthorizationFree(myAuthorizationRef, kAuthorizationFlagDefaults);
 	return myStatus;
 }
@@ -135,7 +130,6 @@ cleanup:
 	{
 		if([[NSFileManager defaultManager] fileExistsAtPath:[self helperPath]])
 		{
-//			NSLog(@"Removing helper...");
 			[[NSFileManager defaultManager] removeItemAtPath:[self helperPath] error:&error];
 			NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
 			[[NSUserDefaults standardUserDefaults] setObject:version forKey:@"lastVersionRun"];
@@ -238,6 +232,7 @@ cleanup:
     NSLog(@"volumePath: '%s'", (char *)[[disk volumePath] UTF8String]);
     NSLog(@"----");
     
+    // Create a file manager instance
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     
     if ([[disk filesystem] isEqualToString:@"msdos"] && [[disk volumeName] isEqualToString:@"NO NAME"]) {
@@ -248,7 +243,7 @@ cleanup:
     else if([[disk volumeName] isEqualToString:@"EFI"]) {
         // macOS/Linux EFI Partition
         self.efiDisk = disk;
-     
+        
         // Probably Winbugs is installed on the same hard drive in EFI mode?
         if (!self.efiWinbugsSet)
         {
@@ -263,12 +258,14 @@ cleanup:
             }
         }
 
+        // Detect EFI bootloader (Only works if the EFI partition it's mounted)
         QBOSDetectOperation *op = [QBOSDetectOperation detectOperationWithVolume:[QBVolume volumeWithDisk:disk]];
         op.delegate = self;
         [volumeCheckQueue addOperation:op];
     }
 	else if([disk filesystem] && ![disk isNetwork] && [disk isMountable])
-	{		
+	{
+        // Detect disk OS
 		QBOSDetectOperation *op = [QBOSDetectOperation detectOperationWithVolume:[QBVolume volumeWithDisk:disk]];
 		op.delegate = self;
 		[volumeCheckQueue addOperation:op];
@@ -285,7 +282,7 @@ cleanup:
 #pragma mark -
 
 /**
- * Do the boot setting, taken from cocoadev.com write file with privs example
+ * Do the boot setting
  */
 - (QBVolumeManagerError)setBootDisk:(QBVolume *)volume nextOnly:(BOOL)nextOnly {
 	QBVolumeManagerError returnValue = kQBVolumeManagerSuccess;

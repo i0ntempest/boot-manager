@@ -27,6 +27,7 @@ void *MainWindowControllerKVOContext = &MainWindowControllerKVOContext;
 
 - (void)awakeFromNib
 {
+    [NSApp activateIgnoringOtherApps:YES]; // needed when in background mode
 	[[self window] setFrameAutosaveName:@"drivewindow"];
 	[[self window] setExcludedFromWindowsMenu:YES];
 	

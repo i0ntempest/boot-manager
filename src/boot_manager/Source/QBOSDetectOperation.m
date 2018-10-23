@@ -36,8 +36,6 @@
         NSString *osBootLoader = nil;
 		BOOL legacy = YES;
         
-        NSLog(@"volumeName: '%s' devicePath: '%s' filesystem: '%s' volumePath: '%s'", (char *)[[self.volume.disk volumeName] UTF8String], (char *)[[self.volume.disk devicePath] UTF8String], (char *)[[self.volume.disk filesystem] UTF8String], (char *)[[self.volume.disk volumePath] UTF8String]);
-        
 		// macOS
 		NSString *versionPath = [[[[self.volume.disk.volumePath stringByAppendingPathComponent:@"System"]
 								   stringByAppendingPathComponent:@"Library"]
@@ -49,11 +47,14 @@
 																 stringByAppendingPathComponent:@"ServerVersion.plist"];
         
         // Winbugs
-        NSString *winbugsPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"Windows"]
+        NSString *winbugsLegacyPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"Windows"]
                                          stringByAppendingPathComponent:@"System32"];
-        NSString *winbugsLegacyInstallationPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"sources"]
+        NSString *winbugsDiscLegacyPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"sources"]
                                                     stringByAppendingPathComponent:@"boot.wim"];
-        // Linux
+        NSString *winbugsDiscEfiPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"efi"]
+                                           stringByAppendingPathComponent:@"microsoft"];
+        
+        // Linux EFI
         NSString *fedoraEfiPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"EFI"]
                                     stringByAppendingPathComponent:@"fedora"];
         NSString *manjaroEfiPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"EFI"]
@@ -72,9 +73,11 @@
                                    stringByAppendingPathComponent:@"Slackware"];
         NSString *suseEfiPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"EFI"]
                                    stringByAppendingPathComponent:@"SuSE"];
-        NSString *linuxLegacy = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"usr"]
+        
+        // Linux BIOS
+        NSString *linuxLegacyPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"usr"]
                                  stringByAppendingPathComponent:@"bin"];
-        NSString *linuxLegacyDiscPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"isolinux"]
+        NSString *linuxDiscLegacyPath = [[self.volume.disk.volumePath stringByAppendingPathComponent:@"isolinux"]
                                          stringByAppendingPathComponent:@"isolinux.bin"];
         
         // Bootloaders
@@ -88,9 +91,9 @@
         BOOL isDir;
         
         /**
-         * Winbugs paths
+         * Winbugs detection
          */
-		if([fileManager fileExistsAtPath:winbugsPath isDirectory:&isDir])
+		if([fileManager fileExistsAtPath:winbugsLegacyPath isDirectory:&isDir])
 		{
 			if(isDir)
 			{
@@ -98,14 +101,27 @@
 				legacy = YES;
 			}
 		}
-        else if([fileManager fileExistsAtPath:winbugsLegacyInstallationPath])
+        else if([fileManager fileExistsAtPath:winbugsDiscEfiPath isDirectory:&isDir])
+        {
+            if(isDir)
+            {
+                osName = @"Windows"; // Winbugs EFI Installation Environment
+                
+                if ([[self.volume.disk filesystem] isEqualToString:@"udf"] || [[self.volume.disk filesystem] isEqualToString:@"cd9660"]) {
+                    legacy = YES;
+                } else {
+                    legacy = NO;
+                }
+            }
+        }
+        else if([fileManager fileExistsAtPath:winbugsDiscLegacyPath])
         {
             osName = @"Windows"; // Winbugs Legacy Installation Environment
             legacy = YES;
         }
         
         /**
-         * macOS paths
+         * macOS detection
          */
         else if([fileManager fileExistsAtPath:versionPath])
         {
@@ -125,7 +141,7 @@
         }
 
         /**
-         * Linux paths
+         * Linux EFI detection
          */
         else if([fileManager fileExistsAtPath:fedoraEfiPath isDirectory:&isDir])
         {
@@ -199,19 +215,23 @@
                 legacy = NO;
             }
         }
-        else if([fileManager fileExistsAtPath:linuxLegacy])
+
+        /**
+         * Linux BIOS detection
+         */
+        else if([fileManager fileExistsAtPath:linuxLegacyPath])
         {
             osName = @"Linux"; // Generic Legacy Linux
             legacy = YES;
         }
-        else if([fileManager fileExistsAtPath:linuxLegacyDiscPath])
+        else if([fileManager fileExistsAtPath:linuxDiscLegacyPath])
         {
             osName = @"Linux"; // Generic Legacy Linux Installation Disc
             legacy = YES;
         }
         
         /**
-         * Bootloaders paths
+         * Bootloaders detection
          */
         else if([fileManager fileExistsAtPath:grubEfiPath])
         {
