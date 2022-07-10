@@ -2,7 +2,8 @@
 
 # Boot Manager
 
-> This project has been abandoned.
+> This project has been abandoned by the original creator.
+> This is an attempt to revive the project to be usable on modern systems.
 
 **Boot Manager** – Boot Manager is a handy utility to make it easier to reboot into your Boot Camp
 windows drive, or even another macOS install. It will also not permanently change your startup disk
