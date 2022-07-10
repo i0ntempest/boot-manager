@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment version="1050" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,12 +17,12 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="74" y="349" width="418" height="206"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <view key="contentView" id="2">
                 <rect key="frame" x="0.0" y="0.0" width="418" height="206"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button id="5">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5">
                         <rect key="frame" x="171" y="101" width="166" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Show in dock" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="6">
@@ -34,7 +34,7 @@
                             <binding destination="9" name="value" keyPath="values.ShowIconInDock" id="74"/>
                         </connections>
                     </button>
-                    <button id="7">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                         <rect key="frame" x="171" y="81" width="166" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Show in menu bar" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="8">
@@ -46,7 +46,7 @@
                             <binding destination="9" name="value" keyPath="values.ShowStatusIcon" id="75"/>
                         </connections>
                     </button>
-                    <button id="24">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="24">
                         <rect key="frame" x="171" y="50" width="193" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Show macOS build numbers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="25">
@@ -62,7 +62,7 @@
                             </binding>
                         </connections>
                     </button>
-                    <button id="15">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                         <rect key="frame" x="171" y="133" width="166" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Launch Boot Manager" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="16">
@@ -73,11 +73,11 @@
                             <binding destination="29" name="value" keyPath="selection.shouldStartBootManagerAtLogin" id="84"/>
                         </connections>
                     </button>
-                    <box verticalHuggingPriority="750" boxType="separator" id="53">
+                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="53">
                         <rect key="frame" x="20" y="158" width="379" height="5"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </box>
-                    <textField verticalHuggingPriority="750" id="54">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="54">
                         <rect key="frame" x="17" y="169" width="56" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="General" id="55">
@@ -86,7 +86,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="56">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="56">
                         <rect key="frame" x="112" y="134" width="56" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="on login" id="57">
@@ -95,7 +95,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="72">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="72">
                         <rect key="frame" x="63" y="103" width="105" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="application icon" id="73">
@@ -104,7 +104,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="76">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="76">
                         <rect key="frame" x="63" y="51" width="105" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="in drive list" id="77">
@@ -113,7 +113,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button id="qdT-KW-ziY">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qdT-KW-ziY">
                         <rect key="frame" x="171" y="26" width="185" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Use legacy mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="dpM-7V-0W0">
@@ -129,7 +129,7 @@
                             </binding>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="IAk-g0-8a0">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IAk-g0-8a0">
                         <rect key="frame" x="56" y="27" width="112" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="legacy booting" id="Qln-9W-GhE">
