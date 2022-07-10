@@ -8,10 +8,10 @@ if [ "$BASEDIR" == "." ]; then
 fi
 
 # Check if the script has been executed using sudo
-if [ ! "$EUID" == 0 ]; then
-    echo "You must run this program as root or using sudo!"
-    exit
-fi
+#if [ ! "$EUID" == 0 ]; then
+#    echo "You must run this program as root or using sudo!"
+#    exit
+#fi
 
 # Check if the script has been executed in macOS
 if ! [[ "$OSTYPE" == "darwin"* ]]; then
@@ -30,10 +30,10 @@ rm -rf "$BUILD_DIR/" >/dev/null 2>&1
 mkdir -p "$BUILD_DIR/"
 
 # Compile Boot Manager app
-xcode-select --install
-xcode-select -s /Applications/Xcode.app/Contents/Developer
+#xcode-select --install
+#xcode-select -s /Applications/Xcode.app/Contents/Developer
 xcodebuild -project "$BOOT_MANAGER_DIR/Boot Manager.xcodeproj" -alltargets -configuration Release
-xcode-select --switch /Library/Developer/CommandLineTools
+#xcode-select --switch /Library/Developer/CommandLineTools
 
 cp -r "$BOOT_MANAGER_DIR/build/Release/Boot Manager.app" "$BUILD_DIR/"
 
